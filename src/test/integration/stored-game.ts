@@ -1,7 +1,6 @@
-import { expect } from "chai"
-import { config } from "dotenv"
+import {expect} from "chai"
+import {config} from "dotenv"
 import Long from "long"
-import _ from "../../../environment"
 import {CheckersStargateClient} from "../../checkers_stargateclient";
 import {CheckersExtension} from "../../modules/queries";
 
