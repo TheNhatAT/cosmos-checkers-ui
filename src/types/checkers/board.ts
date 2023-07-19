@@ -1,4 +1,4 @@
-import {Player} from "./player";
+import {Player, Pos} from "./player";
 import {StoredGame} from "../generated/checkers/stored_game";
 import {IGameInfo} from "../../sharedTypes";
 
@@ -40,4 +40,8 @@ export function storedToGameInfo(game: StoredGame): IGameInfo {
 
 export function storedsToGameInfos(games: StoredGame[]): IGameInfo[] {
     return games.map(storedToGameInfo);
+}
+
+export function guiPositionToPos(position: number[]): Pos {
+    return { x: position[1], y: position[0] }
 }

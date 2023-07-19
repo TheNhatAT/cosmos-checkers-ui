@@ -8,11 +8,20 @@ import ScoreBar from "./BoardMenu/ScoreBar";
 import GameOverModal from "./GameOverModal";
 import {} from "../../types/checkers/extensions-gui"
 import {CheckersStargateClient} from "../../checkers_stargateclient";
+import {checkersChainId, getCheckersChainInfo} from "../../types/checkers/chain";
+import {OfflineSigner} from "@cosmjs/proto-signing";
+import {CheckersSigningStargateClient} from "../../checkers_signingstargateclient";
+import {GasPrice} from "@cosmjs/stargate";
 
 interface IGameContainerProps {
     location: any;
     index: string;
     rpcUrl: string;
+}
+
+interface CreatorInfo {
+    creator: string
+    signingClient: CheckersSigningStargateClient
 }
 
 interface IGameContainerState {
@@ -173,60 +182,67 @@ export default class GameContainer extends Component<
         selected[`${row},${col}`] = true;
         this.setState({ selected });
     }
-    public makeMove(): void {
-        if (this.state.locked && !this.currentPlayerIsAI()) {
-            return;
-        }
-        const keys: string[] = Object.keys(this.state.selected);
-        if (keys.length === 0) {
-            return;
-        }
 
-        const move: Position[] = keys.map(
-            (k: string): Position => k.split(",").map(Number) as Position
-        );
-        const board: MoveTree = this.state.board.getResultingTree(
-            move
-        ) as MoveTree;
-        const player: Player = this.state.board.current_player;
-        const selected = Object.create(null);
-
-        if (board !== null) {
-            this.setState({ board, locked: false }, () => {
-                // check for a change in a player's score
-                // and save the game
-                if (player === 1) {
-                    const p1: IPlayerInfo = this.state.p1 as IPlayerInfo;
-                    p1.score = this.getScore(player);
-                    this.setState({ p1 }, this.saveGame);
-                } else if (player === 2) {
-                    const p2: IPlayerInfo = this.state.p2 as IPlayerInfo;
-                    p2.score = this.getScore(player);
-                    this.setState({ p2 }, this.saveGame);
-                } else {
-                    this.saveGame();
-                }
-                if (board.game_over) {
-                    this.setState({ gameOver: true });
-                } else {
-                    // check if the AI needs to make a move
-                    if (this.currentPlayerIsAI()) {
-                        this.state.board
-                            .getBestMove()
-                            .forEach(
-                                ([row, col]) =>
-                                    (selected[`${row},${col}`] = true)
-                            );
-                        this.setState({ selected, locked: true }, () => {
-                            window.setTimeout(this.makeMove.bind(this), 750);
-                        });
-                    }
-                }
-            });
+    protected async getSigningStargateClient(): Promise<CreatorInfo> {
+        if (this.state.creator && this.state.signingClient)
+            return {
+                creator: this.state.creator,
+                signingClient: this.state.signingClient,
+            }
+        const { keplr } = window
+        if (!keplr) {
+            alert("You need to install Keplr")
+           // throw new Error("You need to install Keplr")
         }
-        // console.log(JSON.stringify(selected));
-        this.setState({ selected });
+        await keplr!.experimentalSuggestChain(getCheckersChainInfo())
+        await keplr!.enable(checkersChainId)
+        const offlineSigner: OfflineSigner = keplr!.getOfflineSigner!(checkersChainId)
+        const creator = (await offlineSigner.getAccounts())[0].address
+        const client: CheckersSigningStargateClient = await CheckersSigningStargateClient.connectWithSigner(
+            this.props.rpcUrl,
+            offlineSigner,
+            {
+                gasPrice: GasPrice.fromString("1stake"),
+            },
+        )
+        this.setState({ creator: creator, signingClient: client })
+        return { creator: creator, signingClient: client }
     }
+
+    public async makeMove(): Promise<void> {
+        if (this.state.locked && !this.currentPlayerIsAI()) {
+            return
+        }
+        const keys: string[] = Object.keys(this.state.selected)
+        if (keys.length === 0) {
+            return
+        }
+
+        const positions: Position[] = keys.map((k: string): Position => k.split(",").map(Number) as Position)
+
+        const client = await this.getStargateClient()
+        const canPlayOrNot = await client.canPlayGuiMove(
+            this.props.index,
+            this.state.board.current_player,
+            positions,
+        )
+        if (!canPlayOrNot.possible) {
+            const error = `Cannot make this move ${canPlayOrNot.reason}`
+            alert(error)
+            //throw new Error(error)
+        }
+
+        const { creator, signingClient } = await this.getSigningStargateClient()
+        await signingClient.playGuiMoves(creator, this.props.index, positions).catch((e: any) => {
+            console.error(e)
+            alert("Failed to play: " + e)
+        })
+
+        const selected = Object.create(null)
+        this.setState({ selected })
+        return this.loadGame()
+    }
+
     public render() {
         let winner: string = "";
         if (this.state.gameOver) {
@@ -256,7 +272,7 @@ export default class GameContainer extends Component<
             </div>
         );
     }
-    public saveGame() {
+    public saveGame(): void {
         if (typeof Storage === "undefined") {
             // console.warn('This browser does not support localstroage. Unable to save games.');
             this.setState({ isSaved: false });
@@ -285,7 +301,6 @@ export default class GameContainer extends Component<
             }
 
             this.setState({ isSaved: true });
-            // console.log("game saved");
         }
     }
 }

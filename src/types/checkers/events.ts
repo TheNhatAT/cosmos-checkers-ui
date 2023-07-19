@@ -16,11 +16,11 @@ export const getMovePlayedEvent = (log: Log): MovePlayedEvent | undefined =>
 
 export const getCapturedPos = (movePlayedEvent: MovePlayedEvent): Pos | undefined => {
     const x: number = parseInt(
-        movePlayedEvent.attributes.find((attribute: Attribute) => attribute.key == "captured-x")!.value,
+        movePlayedEvent.attributes.find((attribute: Attribute) => attribute.key == "capture-x")!.value,
         10,
     )
     const y = parseInt(
-        movePlayedEvent.attributes.find((attribute: Attribute) => attribute.key == "captured-y")!.value,
+        movePlayedEvent.attributes.find((attribute: Attribute) => attribute.key == "capture-y")!.value,
         10,
     )
     if (isNaN(x) || isNaN(y)) return undefined
