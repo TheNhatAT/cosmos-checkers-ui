@@ -3,7 +3,7 @@ import { Params } from "./params";
 import { SystemInfo } from "./system_info";
 import Long from "long";
 import { StoredGame } from "./stored_game";
-import _m0 from "protobufjs/minimal";
+import * as _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "alice.checkers.checkers";
 
