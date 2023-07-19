@@ -18,7 +18,7 @@ export default class PlayerNameInput extends Component<
         super(props);
         this.state = {
             isValid: true,
-            name: `Player ${props.playerNumber}`
+            name: this.props.playerNumber == 1 ? "cosmos1pwxqmgsgdnt0xnaxfxewsaw8jyx9x3a7wlfc8z" : "cosmos1qk555zr65w077hlrtfp5ghlw4k4ruspvc8k75t"
         };
         this.handleChange = this.handleChange.bind(this);
     }
