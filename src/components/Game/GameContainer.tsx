@@ -41,12 +41,12 @@ export default class GameContainer extends Component<
         last: new Date(),
         p1: {
             is_ai: false,
-            name: "Player 1",
+            name: "cosmos1pwxqmgsgdnt0xnaxfxewsaw8jyx9x3a7wlfc8z",
             score: 0
         },
         p2: {
             is_ai: false,
-            name: "Player 2",
+            name: "cosmos1qk555zr65w077hlrtfp5ghlw4k4ruspvc8k75t",
             score: 0
         },
         selected: {}

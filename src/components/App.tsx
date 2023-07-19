@@ -43,7 +43,7 @@ const App = ({rpcUrl}: AppPros) => {
     return (
         <Container style={styles}>
             <div className="well">
-                <div style={titleStyles}>Checkers</div>
+                <div style={titleStyles}>Checkers Demo</div>
                 <Routes>
                     <Route path="menu" element={<MenuContainer location={""} rpcUrl={rpcUrl} />}/>
                     <Route path="play/:index" element={<AsyncGameContainer rpcUrl={rpcUrl}/>}/>

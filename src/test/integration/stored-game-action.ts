@@ -1,7 +1,7 @@
 import {OfflineDirectSigner} from "@cosmjs/proto-signing";
 import {getSignerFromMnemonic} from "../../util/signer";
 import {expect} from "chai";
-import {CheckersSigningStargateClient, CheckersStargateClient} from "../../checkers_stargateclient";
+import {CheckersStargateClient} from "../../checkers_stargateclient";
 import {CheckersExtension} from "../../modules/queries";
 import {Account, DeliverTxResponse, GasPrice} from "@cosmjs/stargate";
 import {askFaucet} from "../../util/faucet";
@@ -16,6 +16,7 @@ import {typeUrlMsgPlayMove} from "../../types/checkers/messages";
 import {BroadcastTxSyncResponse} from "@cosmjs/tendermint-rpc";
 import { toHex } from "@cosmjs/encoding"
 import {config} from "dotenv";
+import {CheckersSigningStargateClient} from "../../checkers_signingstargateclient";
 
 config()
 

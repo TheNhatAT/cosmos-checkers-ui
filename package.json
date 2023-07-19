@@ -23,6 +23,7 @@
     "reactstrap": "9.0.2"
   },
   "devDependencies": {
+    "@keplr-wallet/types": "0.12.16",
     "@types/chai": "4.3.3",
     "@types/dotenv": "8.2.0",
     "@types/lockr": "0.8.6",
