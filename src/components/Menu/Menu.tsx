@@ -21,8 +21,8 @@ const Menu = (props: IMenuProps) => {
         <MenuItem
             deleteGame={props.deleteGame}
             info={game}
-            index={index}
-            key={"game" + index}
+            index={game.index!}
+            key={"game" + game.index}
         />
     ));
     return (
