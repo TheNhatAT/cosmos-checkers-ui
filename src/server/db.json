@@ -1,9 +1,27 @@
 {
     "status": {
         "block": {
-            "height": 0
+            "height": 360
         }
     },
-    "players": {},
-    "games": {}
+    "players": {
+        "cosmos1fx6qlxwteeqxgxwsw83wkf4s9fcnnwk8z86sql": {
+            "gameIds": [
+                "1",
+                "2"
+            ]
+        }
+    },
+    "games": {
+        "1": {
+            "redAddress": "cosmos1fx6qlxwteeqxgxwsw83wkf4s9fcnnwk8z86sql",
+            "blackAddress": "cosmos1fx6qlxwteeqxgxwsw83wkf4s9fcnnwk8z86sql",
+            "deleted": false
+        },
+        "2": {
+            "redAddress": "cosmos1fx6qlxwteeqxgxwsw83wkf4s9fcnnwk8z86sql",
+            "blackAddress": "cosmos1fx6qlxwteeqxgxwsw83wkf4s9fcnnwk8z86sql",
+            "deleted": false
+        }
+    }
 }
